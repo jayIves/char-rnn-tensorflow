@@ -40,13 +40,6 @@ $ tensorboard --logdir=./logs/
 
 Then open a browser to [http://localhost:6006](http://localhost:6006) or the correct IP/Port specified.
 
-
-## Roadmap
-- [ ] Add explanatory comments
-- [ ] Expose more command-line arguments
-- [ ] Compare accuracy and performance with char-rnn
-- [ ] More Tensorboard instrumentation
-
 ## Contributing
 Please feel free to:
 * Leave feedback in the issues
