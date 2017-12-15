@@ -73,3 +73,72 @@ class TextLoader():
 
     def reset_batch_pointer(self):
         self.pointer = 0
+
+class ReversedTextLoader(TextLoader):
+    
+    def __init__(self, data_dir, batch_size, seq_length, encoding='utf-8'):
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+        self.seq_length = seq_length
+        self.encoding = encoding
+
+        input_file = os.path.join(data_dir, "input.txt")
+        vocab_file = os.path.join(data_dir, "vocab_rev.pkl")
+        tensor_file = os.path.join(data_dir, "data_rev.npy")
+
+        if not (os.path.exists(vocab_file) and os.path.exists(tensor_file)):
+            print("reading text file")
+            self.preprocess(input_file, vocab_file, tensor_file)
+        else:
+            print("loading preprocessed files")
+            self.load_preprocessed(vocab_file, tensor_file)
+
+        self.create_batches()
+        self.reset_batch_pointer()
+
+    def preprocess(self, input_file, vocab_file, tensor_file):
+        with codecs.open(input_file, "r", encoding=self.encoding) as f:
+            data = "".join(reversed(f.read()))
+        counter = collections.Counter(data)
+        count_pairs = sorted(counter.items(), key=lambda x: -x[1])
+        self.chars, _ = zip(*count_pairs)
+        self.vocab_size = len(self.chars)
+        self.vocab = dict(zip(self.chars, range(len(self.chars))))
+        with open(vocab_file, 'wb') as f:
+            cPickle.dump(self.chars, f)
+        self.tensor = np.array(list(map(self.vocab.get, data)))
+        np.save(tensor_file, self.tensor)
+
+class PostFixTextLoader(TextLoader):
+    def __init__(self, data_dir, batch_size, seq_length, encoding='utf-8'):
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+        self.seq_length = seq_length
+        self.encoding = encoding
+
+        input_file = os.path.join(data_dir, "input.txt")
+        vocab_file = os.path.join(data_dir, "vocab_post.pkl")
+        tensor_file = os.path.join(data_dir, "data_post.npy")
+
+        if not (os.path.exists(vocab_file) and os.path.exists(tensor_file)):
+            print("reading text file")
+            self.preprocess(input_file, vocab_file, tensor_file)
+        else:
+            print("loading preprocessed files")
+            self.load_preprocessed(vocab_file, tensor_file)
+
+        self.create_batches()
+        self.reset_batch_pointer()
+
+    def preprocess(self, input_file, vocab_file, tensor_file):
+        with codecs.open(input_file, "r", encoding=self.encoding) as f:
+            data = "".join([line[-4:] if len(line) >= 4 else line for line in f if '[' not in line and ']' not in line])
+        counter = collections.Counter(data)
+        count_pairs = sorted(counter.items(), key=lambda x: -x[1])
+        self.chars, _ = zip(*count_pairs)
+        self.vocab_size = len(self.chars)
+        self.vocab = dict(zip(self.chars, range(len(self.chars))))
+        with open(vocab_file, 'wb') as f:
+            cPickle.dump(self.chars, f)
+        self.tensor = np.array(list(map(self.vocab.get, data)))
+        np.save(tensor_file, self.tensor)

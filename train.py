@@ -134,6 +134,5 @@ def train(args):
                                global_step=e * data_loader.num_batches + b)
                     print("model saved to {}".format(checkpoint_path))
 
-
 if __name__ == '__main__':
     main()
