@@ -13,9 +13,7 @@ Inspired from Andrej Karpathy's [char-rnn](https://github.com/karpathy/char-rnn)
 - [Tensorflow 1.0](http://www.tensorflow.org)
 
 ## Basic Usage
-To train with default parameters on the tinyshakespeare corpus, run `python train.py`. To access all the parameters use `python train.py --help`.
-
-To sample from a checkpointed model, `python sample.py`.
+You can run this module with ./main.sh
 
 ## Datasets
 You can use any plain text file as input. For example you could download [The complete Sherlock Holmes](https://sherlock-holm.es/ascii/) as such:

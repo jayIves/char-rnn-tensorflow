@@ -54,7 +54,6 @@ def sample(args):
         forward_chars, forward_vocab = cPickle.load(f)
 
     model = LineModel(forward_args, training=False)
-    print("Hit")
     forwardPass = None
     backwardsPass = None
     finalPass = []
@@ -70,7 +69,6 @@ def sample(args):
 
     forwardPass = forwardPass.split('\n')
     forwardPass = [forwardPass[i] for i in range(0,len(forwardPass),2)]
-    print(forwardPass)
 
     tf.reset_default_graph()
     reversedModel = ReversedModel(reversed_args, training=False)
@@ -83,7 +81,6 @@ def sample(args):
             saver.restore(sess, ckpt.model_checkpoint_path)
             for i in range(len(forwardPass)):
                 index = -i - 1
-                print(index)
                 line = forwardPass[index]
                 primeChar = ("\n" + "".join(reversed(line[-3:]))) if len(line) > 3 else "\n"
                 primer = "".join(reversed("\n".join(forwardPass[index+1:index+3] if index != -1 else [])))
@@ -92,7 +89,6 @@ def sample(args):
                 finalPass.append(x[0])
                 finalPass.append(line)
 
-    print()
     print("\n".join(reversed(finalPass)))
 if __name__ == '__main__':
     main()

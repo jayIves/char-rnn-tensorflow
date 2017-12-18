@@ -364,7 +364,7 @@ class PostModel(Model):
         tf.summary.histogram('loss', loss)
         tf.summary.scalar('train_loss', self.cost)
 
-    def sample(self, sess, chars, vocab, num=200, prime='awn\n', sampling_type=1):
+    def sample(self, sess, chars, vocab, num=4, prime='awn\n', sampling_type=1):
         state = sess.run(self.cell.zero_state(1, tf.float32))
         for char in prime[:-1]:
             x = np.zeros((1, 1))
@@ -380,7 +380,7 @@ class PostModel(Model):
         numLines = 0
         ret = prime
         char = prime[-1]
-        for n in range(num):
+        while numLines < num:
             x = np.zeros((1, 1))
             x[0, 0] = vocab[char]
             feed = {self.input_data: x, self.initial_state: state}
@@ -402,7 +402,5 @@ class PostModel(Model):
             char = pred
             if char == '\n':
                 numLines += 1
-                if numLines == 4:
-                    break
         return "".join(ret[:-1])
 

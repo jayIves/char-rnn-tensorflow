@@ -70,12 +70,14 @@ def sample(args):
                                args.sample)
 
     forwardPass = forwardPass.split('\n')
-    forwardPass = [forwardPass[i] for i in range(0,len(forwardPass),4)]
+    print(len(forwardPass))
+    forwardPass = [forwardPass[i] for i in range(0,len(forwardPass),3)]
     forwardPass = [line.strip() for line in forwardPass if len(line) > 3]
+    print(len(forwardPass))
 
-    print("Forward Pass")
-    for line in forwardPass:
-        print(line)
+    #print("Forward Pass")
+    #for line in forwardPass:
+    #    print(line)
 
     tf.reset_default_graph()
     postModel = PostModel(post_args, training=False)
@@ -86,11 +88,11 @@ def sample(args):
         ckpt = tf.train.get_checkpoint_state(args.post_dir)
         if ckpt and ckpt.model_checkpoint_path:
             saver.restore(sess, ckpt.model_checkpoint_path)
-            postSamples = [ postModel.sample(sess, post_chars, post_vocab, args.n, line[-4:] if len(line) > 0 else "\n", args.sample).split('\n')[1:4] for line in forwardPass ] 
+            postSamples = [ postModel.sample(sess, post_chars, post_vocab, 4, line[-4:] if len(line) > 0 else "\n", args.sample).split('\n')[1:4] for line in forwardPass ] 
 
-    print("Post Samples")
-    for line in postSamples:
-        print(line)
+    #print("Post Samples")
+    #for line in postSamples:
+    #    print(line)
 
     tf.reset_default_graph()
 
@@ -117,9 +119,9 @@ def sample(args):
                     #print(reversedLine.strip())
                     finalPass.append(reversedLine)
                     lines.append(reversedLine)
-                finalPass.append('> ' + line)
+                finalPass.append(line)
 
-    print("Text")
-    print("\n".join(reversed(finalPass)))
+    #print("Text")
+    print("\n".join(reversed(finalPass[-args.n:])))
 if __name__ == '__main__':
     main()
